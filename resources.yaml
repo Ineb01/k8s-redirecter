@@ -86,6 +86,10 @@ spec:
   - host: "hellostatic.cluster.dphx.eu"
     http:
       paths:
-        - backend:
-            serviceName: nginx-svc
-            servicePort: 80
+        - pathType: Prefix
+          path: "/"
+          backend:
+            service:
+              name: nginx-svc
+              port:
+                number: 80
