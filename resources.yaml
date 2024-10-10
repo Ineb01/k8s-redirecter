@@ -1,0 +1,85 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-map
+  namespace: hello-static
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html>
+      <body>
+        <h1>Hello from the Cloud</h1>
+        <script>
+          const queryDict = {};
+          location.search.substr(1).split("&").forEach(function(item) {queryDict[item.split("=")[0]] = item.split("=")[1]})
+          document.querySelector("h1").innerText=`Hello ${queryDict["name"]} from the Cloud`;
+        </script>
+      </body>
+    </html>
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: nginx
+  name: nginx
+  namespace: hello-static
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:    
+      restartPolicy: Always
+      containers:
+      - image: nginx:stable-alpine
+        imagePullPolicy: Always
+        name: nginx
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: index-volume
+          mountPath: /usr/share/nginx/html
+      volumes:
+      - name: index-volume
+        configMap:
+          name: config-map
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: nginx
+  name: nginx-svc
+  namespace: hello-static
+spec:
+  ports:
+  - name: "80"
+    port: 80
+    targetPort: 80
+  selector:
+    app: nginx
+
+---
+
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: ingress
+  namespace: hello-static
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: "hellostatic.cluster.dphx.eu"
+    http:
+      paths:
+        - backend:
+            serviceName: nginx-svc
+            servicePort: 80
