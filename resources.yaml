@@ -91,7 +91,7 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ingress
+  name: authentik-outpost
   namespace: hello-static
 spec:
   ingressClassName: nginx
@@ -112,7 +112,7 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ingress
+  name: nginx-ingress
   namespace: hello-static
   annotations:
   # This should be the in-cluster DNS name for the authentik outpost service
