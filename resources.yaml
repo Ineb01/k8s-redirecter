@@ -23,6 +23,11 @@ data:
         </script>
       </body>
     </html>
+  redirect.html: |
+    <!DOCTYPE html>
+    <html>
+      <meta http-equiv="refresh" content="0; url=http://google.com/" />
+    </html>
 ---
 
 apiVersion: apps/v1
