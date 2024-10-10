@@ -86,23 +86,3 @@ spec:
   selector:
     app: nginx
 
----
-
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: authentik-hellostatic
-  namespace: authentik
-spec:
-  ingressClassName: nginx
-  rules:
-  - host: hellostatic.cluster.dphx.eu
-    http:
-      paths:
-      - backend:
-          service:
-            name: authentik-server
-            port:
-              number: 80
-        path: /
-        pathType: Prefix
